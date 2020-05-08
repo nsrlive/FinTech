@@ -105,7 +105,7 @@ plt.plot(cumtrading, label = 'cumtrading', color = 'r', linestyle = 'dashed')
 plt.title('收盘价累积收益率与均线策略累积收益率')
 plt.legend()
 plt.show()
-
+ 
 # 求买卖点预测准确率
 sma_return[sma_return == (-0)] = 0
 smawinrate = len(sma_return[sma_return>0]) / len(sma_return[sma_return != 0])
