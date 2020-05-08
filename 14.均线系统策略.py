@@ -1,5 +1,5 @@
 import tushare as ts
-ts.set_token('你的token')
+ts.set_token('1ce89c242245eee3d6ad50fd74eab5a24c35764892fc94213bffc0fe')
 pro = ts.pro_api()
 
 import pandas as pd
@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = 'SimHei'  #让matplotlib支持微软雅黑中文
 plt.rcParams['axes.unicode_minus'] = False  #解决负号无法正常使用的问题
 
-data = pro.daily(ts_code='601988.SH', start_date='20191201', end_date='20200331')
+data = pro.daily(ts_code='601988.SH', start_date='20190501', end_date='20200430')
 data = data.sort_values('trade_date', ascending = True)
 data = data.set_index('trade_date')
 data.index = pd.to_datetime(data.index)
@@ -166,11 +166,11 @@ plt.show()
 
 # DIF = 12日指数移动平均值 - 26日指数移动平均值
 # DEA = DIF的9日指数移动平均值
-# MACD = DIF - DEA
+# MACD = 2 * (DIF - DEA)
 
 DIF = pd.DataFrame.ewm(close, span = 12).mean() - pd.DataFrame.ewm(close, span = 26).mean()
-DEA = pd.Series.ewm(DIF, span = 12).mean()
-MACD = DIF - DEA
+DEA = pd.Series.ewm(DIF, span = 9).mean()
+MACD = 2 * (DIF - DEA)
 
 plt.subplot(211)
 plt.plot(DIF, label = 'DIF', color = 'k')
