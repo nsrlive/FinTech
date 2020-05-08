@@ -1,5 +1,5 @@
 import tushare as ts
-ts.set_token('1ce89c242245eee3d6ad50fd74eab5a24c35764892fc94213bffc0fe')
+ts.set_token('你的token')
 pro = ts.pro_api()
 
 import pandas as pd
