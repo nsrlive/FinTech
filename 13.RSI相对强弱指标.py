@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = 'SimHei'  #让matplotlib支持微软雅黑中文
 plt.rcParams['axes.unicode_minus'] = False  #解决负号无法正常使用的问题
 
-data = pro.daily(ts_code='601988.SH', start_date='20191201', end_date='20200331')
+data = pro.daily(ts_code='601988.SH', start_date='20190501', end_date='20200430')
 data = data.sort_values('trade_date', ascending = True)
 data = data.set_index('trade_date')
 data.index = pd.to_datetime(data.index)
@@ -136,6 +136,46 @@ def rsi(price,period = 6):
 # 示例
 rsi12 = rsi(close, 12)
 rsi12.tail()
+
+###############################################################################
+# 采用如下公式计算RSI = 100 - 100 / (1 + RS)
+def RSI(array_list, periods = 6):
+    length = len(array_list)
+    rsies = [np.nan] * length # 生成和价格序列长度相同，但值全为空的列表
+    if length <= periods: # 时间序列的长度要大于RSI计算的天数
+        return rsies
+    up_avg = 0 # 初始化均值
+    down_avg = 0 # 初始化均值
+
+    first_t = array_list[:periods + 1] # 选中第0到第七（第一个交易日到第七个交易日）
+    for i in range(1, len(first_t)):
+        if first_t[i] >= first_t[i - 1]: # 如果当天价格大于前一天的价格
+            up_avg = up_avg + (first_t[i] - first_t[i - 1]) # 上涨的部分
+        else:
+            down_avg = down_avg + (first_t[i - 1] - first_t[i]) # 下跌的部分
+    up_avg = up_avg / periods
+    down_avg = down_avg / periods
+    rs = up_avg / down_avg
+    rsies[periods] = 100 - 100 / (1 + rs)
+
+    for j in range(periods + 1, length): # 从7到最后（从第八个交易日）
+        up = 0
+        down = 0
+        if array_list[j] >= array_list[j - 1]: 
+            up = array_list[j] - array_list[j - 1]
+            down = 0
+        else:
+            up = 0
+            down = array_list[j - 1] - array_list[j]
+        # 类似移动平均的计算公式
+        up_avg = (up_avg * (periods - 1) + up) / periods
+        down_avg = (down_avg * (periods - 1) + down) / periods
+        rs = up_avg / down_avg
+        rsies[j] = 100 - 100 / (1 + rs)
+    return rsies
+
+rsi6 = RSI(close, 6)
+rsi6 = pd.Series(rsi6, index = close.index)
 
 ###############################################################################
 
