@@ -138,7 +138,7 @@ rsi12 = rsi(close, 12)
 rsi12.tail()
 
 ###############################################################################
-# 采用如下公式计算RSI = 100 - 100 / (1 + RS)
+# 采用如下公式计算RSI = 100 - 100 / (1 + RS) 
 def RSI(array_list, periods = 6):
     length = len(array_list)
     rsies = [np.nan] * length # 生成和价格序列长度相同，但值全为空的列表
